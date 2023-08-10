@@ -1,10 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:22.04
-
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-  python3 \
-  python3-pip
+FROM python:3.10.12-bookworm
 
 # Install GIT
 RUN apt update
@@ -15,16 +10,13 @@ RUN git clone https://github.com/konstantinosKokos/spindle.git
 WORKDIR /spindle
 
 # Copy the requirements file
-COPY requirements.txt requirements.txt
-
-# Upgrade PIP to latest version (needed for aethel)
-RUN pip3 install --upgrade pip
+COPY requirements.txt ./
 
 # Install the requirements
-RUN pip3 install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Install aethel
-RUN pip3 install git+https://github.com/konstantinosKokos/aethel@795f34046b7970a28e0e2491ba23dea5e716f1d2
+RUN pip install git+https://github.com/konstantinosKokos/aethel@795f34046b7970a28e0e2491ba23dea5e716f1d2
 
 # Install PyTorch and its dependencies
 RUN pip3 install torch==1.12.0 \

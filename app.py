@@ -1,23 +1,34 @@
 from flask import Flask, jsonify, request
-import spindle_analysis
+from inference import InferenceWrapper
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET'])
-def handle_get_request():
-    return 'Hello, world!'
+inferer = InferenceWrapper(
+    weight_path="./data/model_weights.pt",
+    atom_map_path="./data/atom_map.tsv",
+    config_path="./data/bert_config.json",
+    device="cpu",
+)  # replace with 'cpu' if no GPU accelaration
 
-@app.route('/', methods=['POST'])
+
+@app.route("/", methods=["GET"])
+def handle_get_request():
+    return "Hello, world!"
+
+
+@app.route("/", methods=["POST"])
 def handle_request():
-    print('Handling request...')
-    analysis_input = request.data.decode('utf-8')
-    analysis_results = spindle_analysis.run_spindle_analysis(analysis_input)
-    print('Analysis complete!')
-    
-    response = { 'results': analysis_results }
+    print("Request received!")
+    analysis_input = request.data.decode("utf-8")
+
+    print('Starting analysis with input:', analysis_input)
+    results = inferer.analyze([analysis_input])
+
+    print("Analysis complete!")
+    response = {"results": results}
 
     return jsonify(response)
 
-if __name__ == '__main__':
-    print('Starting Spindle Server!')
+if __name__ == "__main__":
+    print("Starting Spindle Server!")
     app.run()
