@@ -36,5 +36,8 @@ EXPOSE 5000
 # Set the environment variable for Flask
 ENV FLASK_APP=app.py
 
+# Shows print logs from our server in the container logs.
+ENV PYTHONUNBUFFERED=1
+
 # Run the Flask server
 CMD ["flask", "run", "--host=0.0.0.0"]
