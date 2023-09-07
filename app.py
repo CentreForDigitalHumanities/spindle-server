@@ -24,9 +24,18 @@ def handle_request():
 
     try:
         request_body_json = json.loads(request_body)
-        spindle_input = request_body_json["input"]
-    except:
+    except json.JSONDecodeError:
         log.error("Failed to parse request body as JSON.")
+        abort(400)
+
+    if "input" not in request_body_json:
+        log.error("Request body does not contain 'input' field.")
+        abort(400)
+
+    spindle_input = request_body_json["input"]
+
+    if not isinstance(spindle_input, str):
+        log.error("Input is not a string.")
         abort(400)
 
     log.info("Starting analysis with input:", spindle_input)
