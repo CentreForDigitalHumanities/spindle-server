@@ -39,5 +39,8 @@ ENV FLASK_APP=app.py
 # Shows print logs from our server in the container logs.
 ENV PYTHONUNBUFFERED=1
 
+# Download BERTje model ahead of time
+RUN python -c 'from transformers import pipeline; pipeline("fill-mask", model="GroNLP/bert-base-dutch-cased")'
+
 # Run the Flask server
 CMD ["flask", "run", "--host=0.0.0.0"]
