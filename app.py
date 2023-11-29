@@ -47,7 +47,7 @@ def handle_request():
 
     if len(results) < 1:
         log.error("Got no results")
-        abort(400)
+        abort(500)
 
     analysis = results[0]
     # spindle will store an exception value in the proof variable, at least in some failure modes
