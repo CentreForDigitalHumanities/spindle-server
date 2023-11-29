@@ -23,6 +23,9 @@ RUN pip3 install --no-index \
 
 RUN pip3 install transformers==4.20.1 six Flask
 
+# Download BERTje model ahead of time
+RUN python -c 'from transformers import pipeline; pipeline("fill-mask", model="GroNLP/bert-base-dutch-cased")'
+
 # Copy data files
 COPY atom_map.tsv data/atom_map.tsv
 COPY bert_config.json data/bert_config.json
@@ -38,9 +41,6 @@ ENV FLASK_APP=app.py
 
 # Shows print logs from our server in the container logs.
 ENV PYTHONUNBUFFERED=1
-
-# Download BERTje model ahead of time
-RUN python -c 'from transformers import pipeline; pipeline("fill-mask", model="GroNLP/bert-base-dutch-cased")'
 
 # Run the Flask server
 CMD ["flask", "run", "--host=0.0.0.0"]
