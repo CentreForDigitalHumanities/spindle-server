@@ -1,6 +1,7 @@
 from flask import Flask, abort, jsonify, request
 import json
 from inference import InferenceWrapper
+from aethel.mill.serialization import serial_proof_to_json, serialize_proof
 from aethel.utils.tex import sample_to_tex
 import logging
 
@@ -44,16 +45,34 @@ def handle_request():
     log.info("Analysis complete!")
     log.info("Results: %s", results)
 
+    if len(results) < 1:
+        log.error("Got no results")
+        abort(500)
+
+    analysis = results[0]
+    # spindle will store an exception value in the proof variable, at least in some failure modes
+    if isinstance(analysis.proof, Exception):
+        log.error("Error in analysis", exc_info=analysis.proof)
+        abort(500)
+
     try:
-        tex_from_sample = sample_to_tex(results[0])
+        tex_from_sample = sample_to_tex(analysis)
     except:
-        log.error("Failed to convert result to TeX.")
-        abort(400)
+        log.exception("Failed to convert result to TeX.")
+        abort(500)
+        return  # not necessary given abort, but helps type-checker understand that we leave the function here
 
     log.info("TeX conversion successful.")
     log.info("TeX: %s", tex_from_sample)
 
-    response = {"results": tex_from_sample}
+    # prepare json-ready version of proof and lexical phrases
+    proof = serial_proof_to_json(serialize_proof(analysis.proof))
+    lexical_phrases = [phrase.json() for phrase in analysis.lexical_phrases]
+
+    response = dict(
+        tex=tex_from_sample,
+        proof=proof,
+        lexical_phrases=lexical_phrases)
     return jsonify(response)
 
 

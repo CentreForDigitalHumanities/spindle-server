@@ -10,7 +10,7 @@ RUN git clone https://github.com/konstantinosKokos/spindle.git
 WORKDIR /spindle
 
 # Install aethel
-RUN pip install git+https://github.com/konstantinosKokos/aethel@795f34046b7970a28e0e2491ba23dea5e716f1d2
+RUN pip install git+https://github.com/konstantinosKokos/aethel@41eab8fb178a197cdf8de738b68e386f07e6e4f5
 
 # Install PyTorch and its dependencies
 RUN pip3 install torch==1.12.0 opt_einsum --extra-index-url https://download.pytorch.org/whl/cpu
@@ -22,6 +22,9 @@ RUN pip3 install --no-index \
   torch-spline-conv -f https://data.pyg.org/whl/torch-1.12.0+cpu.html
 
 RUN pip3 install transformers==4.20.1 six Flask
+
+# Download BERTje model ahead of time
+RUN python -c 'from transformers import pipeline; pipeline("fill-mask", model="GroNLP/bert-base-dutch-cased")'
 
 # Copy data files
 COPY atom_map.tsv data/atom_map.tsv
@@ -38,9 +41,6 @@ ENV FLASK_APP=app.py
 
 # Shows print logs from our server in the container logs.
 ENV PYTHONUNBUFFERED=1
-
-# Download BERTje model ahead of time
-RUN python -c 'from transformers import pipeline; pipeline("fill-mask", model="GroNLP/bert-base-dutch-cased")'
 
 # Run the Flask server
 CMD ["flask", "run", "--host=0.0.0.0"]
