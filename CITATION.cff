@@ -1,0 +1,30 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Spindle Server
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - city: Utrecht
+    country: NL
+    name: >-
+      Research Software Lab, Centre for Digital Humanities,
+      Utrecht University
+    website: >-
+      https://cdh.uu.nl/centre-for-digital-humanities/research-software-lab/
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.10571295
+repository-code: 'https://github.com/UUDigitalHumanitieslab/spindle-server'
+abstract: Simple Flask-based webserver for Spindle.
+keywords:
+  - spindle
+  - type-logical parser
+  - computational linguistics
+license: BSD-3-Clause
+commit: 5042e349ab43b28e7a37b4bd3c764a969a1507d1
+version: 0.1.0
+date-released: '2024-01-26'

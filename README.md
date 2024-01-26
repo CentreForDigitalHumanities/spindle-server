@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/671386963.svg)](https://zenodo.org/doi/10.5281/zenodo.10571294)
+
 ## Spindle Server
 
 This repository contains a Dockerfile that can be used to create an image for a Spindle parser, wrapped in a very simple Flask webserver.
