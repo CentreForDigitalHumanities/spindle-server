@@ -26,6 +26,9 @@ RUN pip3 install transformers==4.20.1 six Flask
 # Download BERTje model ahead of time
 RUN python -c 'from transformers import pipeline; pipeline("fill-mask", model="GroNLP/bert-base-dutch-cased")'
 
+# Install Gunicorn
+RUN pip install gunicorn
+
 # Copy data files
 COPY atom_map.tsv data/atom_map.tsv
 COPY bert_config.json data/bert_config.json
@@ -33,11 +36,15 @@ COPY model_weights.pt data/model_weights.pt
 
 COPY app.py app.py
 
+# Allow the user to specify the port for the Flask server.
+ARG SPINDLE_PORT=32768
+
 # Expose the port on which the Flask server will run
-EXPOSE 5000
+EXPOSE $SPINDLE_PORT
 
 # Set the environment variable for Flask
 ENV FLASK_APP=app.py
+ENV FLASK_RUN_PORT=$SPINDLE_PORT
 
 # Shows print logs from our server in the container logs.
 ENV PYTHONUNBUFFERED=1
