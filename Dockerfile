@@ -1,6 +1,9 @@
 # syntax=docker/dockerfile:1
 FROM python:3.10.12-bookworm
 
+# Shows print logs from our server in the container logs.
+ENV PYTHONUNBUFFERED=1
+
 # Install GIT
 RUN apt update
 RUN apt install -y git
@@ -45,9 +48,6 @@ EXPOSE $SPINDLE_PORT
 # Set the environment variable for Flask
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_PORT=$SPINDLE_PORT
-
-# Shows print logs from our server in the container logs.
-ENV PYTHONUNBUFFERED=1
 
 # Run the Flask server
 CMD ["flask", "run", "--host=0.0.0.0"]
