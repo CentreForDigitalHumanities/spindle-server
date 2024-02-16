@@ -32,6 +32,9 @@ RUN python -c 'from transformers import pipeline; pipeline("fill-mask", model="G
 # Install Gunicorn
 RUN pip install gunicorn
 
+# Create a directory for Gunicorn logs (production).
+RUN mkdir -p /logs
+
 # Copy data files
 COPY atom_map.tsv data/atom_map.tsv
 COPY bert_config.json data/bert_config.json
