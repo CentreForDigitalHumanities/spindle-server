@@ -28,7 +28,7 @@ COPY atom_map.tsv data/atom_map.tsv
 COPY bert_config.json data/bert_config.json
 COPY model_weights.pt data/model_weights.pt
 
-COPY app.py app.py
+COPY app.py /app.py
 
 # Expose the port on which the Flask server will run
 EXPOSE 5000
