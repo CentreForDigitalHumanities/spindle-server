@@ -1,8 +1,9 @@
 # syntax=docker/dockerfile:1
 FROM python:3.10.12-bookworm
 
-# Shows print logs from our server in the container logs.
+# Show print logs; don't write .pyc files.
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
 # Install GIT
 RUN apt update
@@ -42,11 +43,8 @@ COPY model_weights.pt data/model_weights.pt
 
 COPY app.py app.py
 
-# Allow the user to specify the port for the Flask server.
-ARG SPINDLE_PORT=32768
-
 # Expose the port on which the Flask server will run
-EXPOSE $SPINDLE_PORT
+EXPOSE 32768
 
 # Set the environment variable for Flask
 ENV FLASK_APP=app.py
