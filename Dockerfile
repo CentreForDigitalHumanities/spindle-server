@@ -1,6 +1,10 @@
 # syntax=docker/dockerfile:1
 FROM python:3.10.12-bookworm
 
+# Show print logs; don't write .pyc files.
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
 # Install GIT
 RUN apt update
 RUN apt install -y git
@@ -10,7 +14,7 @@ RUN git clone https://github.com/konstantinosKokos/spindle.git
 WORKDIR /spindle
 
 # Install aethel
-RUN pip install git+https://github.com/konstantinosKokos/aethel@795f34046b7970a28e0e2491ba23dea5e716f1d2
+RUN pip install git+https://github.com/konstantinosKokos/aethel@41eab8fb178a197cdf8de738b68e386f07e6e4f5
 
 # Install PyTorch and its dependencies
 RUN pip3 install torch==1.12.0 opt_einsum --extra-index-url https://download.pytorch.org/whl/cpu
@@ -23,6 +27,15 @@ RUN pip3 install --no-index \
 
 RUN pip3 install transformers==4.20.1 six Flask
 
+# Download BERTje model ahead of time
+RUN python -c 'from transformers import pipeline; pipeline("fill-mask", model="GroNLP/bert-base-dutch-cased")'
+
+# Install Gunicorn
+RUN pip install gunicorn
+
+# Create a directory for Gunicorn logs (production).
+RUN mkdir -p /logs
+
 # Copy data files
 COPY atom_map.tsv data/atom_map.tsv
 COPY bert_config.json data/bert_config.json
@@ -31,16 +44,11 @@ COPY model_weights.pt data/model_weights.pt
 COPY app.py app.py
 
 # Expose the port on which the Flask server will run
-EXPOSE 5000
+EXPOSE 32768
 
 # Set the environment variable for Flask
 ENV FLASK_APP=app.py
-
-# Shows print logs from our server in the container logs.
-ENV PYTHONUNBUFFERED=1
-
-# Download BERTje model ahead of time
-RUN python -c 'from transformers import pipeline; pipeline("fill-mask", model="GroNLP/bert-base-dutch-cased")'
+ENV FLASK_RUN_PORT=$SPINDLE_PORT
 
 # Run the Flask server
 CMD ["flask", "run", "--host=0.0.0.0"]
