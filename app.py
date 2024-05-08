@@ -21,6 +21,10 @@ def create_app():
     log.info('Loaded model')
     app = Flask(__name__)
 
+    @app.route("/status/", methods=["GET"])
+    def status():
+        return jsonify(dict(ok=True))
+
     @app.route("/", methods=["POST"])
     def handle_request():
         log.info("Request received!")
