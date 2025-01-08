@@ -19,7 +19,7 @@ RUN pip install git+https://github.com/konstantinosKokos/aethel@41eab8fb178a197c
 # Install PyTorch and its dependencies
 RUN pip3 install torch==1.12.0 opt_einsum --extra-index-url https://download.pytorch.org/whl/cpu
 RUN pip3 install torch-geometric==2.3.1
-RUN pip3 install --no-index \
+RUN pip3 install \
   torch-cluster \
   torch-scatter \
   torch-sparse \
