@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1
 FROM python:3.10.12-bookworm
 
+ARG ARM="False" # Whether this machine uses an ARM processor
+
 # Show print logs; don't write .pyc files.
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -19,11 +21,19 @@ RUN pip install git+https://github.com/konstantinosKokos/aethel@41eab8fb178a197c
 # Install PyTorch and its dependencies
 RUN pip3 install torch==1.12.0 opt_einsum --extra-index-url https://download.pytorch.org/whl/cpu
 RUN pip3 install torch-geometric==2.3.1
-RUN pip3 install \
-  torch-cluster \
-  torch-scatter \
-  torch-sparse \
-  torch-spline-conv -f https://data.pyg.org/whl/torch-1.12.0+cpu.html
+
+RUN if ["ARM"="True"]; then \
+    pip3 install --no-index \
+    torch-cluster \
+    torch-scatter \
+    torch-sparse \
+    torch-spline-conv -f https://data.pyg.org/whl/torch-1.12.0+cpu.html; \
+  else \
+    pip3 install \
+    torch-cluster \
+    torch-scatter \
+    torch-sparse \
+    torch-spline-conv;
 
 RUN pip3 install transformers==4.20.1 six Flask
 
