@@ -21,18 +21,12 @@ RUN pip install git+https://github.com/konstantinosKokos/aethel@41eab8fb178a197c
 RUN pip3 install torch==1.12.0 opt_einsum --extra-index-url https://download.pytorch.org/whl/cpu
 RUN pip3 install torch-geometric==2.3.1
 
-# Copy and set up the shell scripts 
-COPY install_pytorch_deps_amd.sh /usr/local/bin/install_pytorch_deps_amd.sh
-COPY install_pytorch_deps_arm.sh /usr/local/bin/install_pytorch_deps_arm.sh
-RUN chmod +x /usr/local/bin/install_pytorch_deps_amd.sh
-RUN chmod +x /usr/local/bin/install_pytorch_deps_arm.sh
-
 # Run the shell script conditionally based on the build architecture
 ARG BUILDARCH
-RUN if [ "$BUILDARCH" = "arm64" ]; then \
-    /usr/local/bin/install_pytorch_deps_arm.sh; \
+RUN if [ "$BUILDARCH" = "arm64" ] ; then \
+    pip3 install torch-cluster torch-scatter torch-sparse torch-spline-conv ; \
   else \
-    /usr/local/bin/install_pytorch_deps_amd.sh; \
+    pip3 install --no-index torch-cluster torch-scatter torch-sparse torch-spline-conv -f https://data.pyg.org/whl/torch-1.12.0+cpu.html ; \
   fi
 
 RUN pip3 install transformers==4.20.1 six Flask
