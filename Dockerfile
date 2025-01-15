@@ -1,7 +1,6 @@
 # syntax=docker/dockerfile:1
 FROM python:3.10.12-bookworm
 
-ARG ARM="False" # Whether this machine uses an ARM processor
 
 # Show print logs; don't write .pyc files.
 ENV PYTHONUNBUFFERED=1
@@ -22,18 +21,19 @@ RUN pip install git+https://github.com/konstantinosKokos/aethel@41eab8fb178a197c
 RUN pip3 install torch==1.12.0 opt_einsum --extra-index-url https://download.pytorch.org/whl/cpu
 RUN pip3 install torch-geometric==2.3.1
 
-RUN if ["ARM"="True"]; then \
-    pip3 install --no-index \
-    torch-cluster \
-    torch-scatter \
-    torch-sparse \
-    torch-spline-conv -f https://data.pyg.org/whl/torch-1.12.0+cpu.html; \
+# Copy and set up the shell scripts 
+COPY install_pytorch_deps_amd.sh /usr/local/bin/install_pytorch_deps_amd.sh
+COPY install_pytorch_deps_arm.sh /usr/local/bin/install_pytorch_deps_arm.sh
+RUN chmod +x /usr/local/bin/install_pytorch_deps_amd.sh
+RUN chmod +x /usr/local/bin/install_pytorch_deps_arm.sh
+
+# Run the shell script conditionally based on the build architecture
+ARG BUILDARCH
+RUN if [ "$BUILDARCH" = "arm64" ]; then \
+    /usr/local/bin/install_pytorch_deps_arm.sh; \
   else \
-    pip3 install \
-    torch-cluster \
-    torch-scatter \
-    torch-sparse \
-    torch-spline-conv;
+    /usr/local/bin/install_pytorch_deps_amd.sh; \
+  fi
 
 RUN pip3 install transformers==4.20.1 six Flask
 
