@@ -1,3 +1,4 @@
 model_weights.pt
 .venv
 __pycache__
+.python-version
