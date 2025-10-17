@@ -50,6 +50,9 @@ COPY app.py app.py
 # Expose the port on which the Flask server will run
 EXPOSE 32768
 
+# Provide a default port value so FLASK_RUN_PORT is defined
+ENV SPINDLE_PORT=32768
+
 # Set the environment variable for Flask
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_PORT=$SPINDLE_PORT
