@@ -29,7 +29,7 @@ RUN if [ "$BUILDARCH" = "arm64" ] ; then \
     pip3 install --no-index torch-cluster torch-scatter torch-sparse torch-spline-conv -f https://data.pyg.org/whl/torch-1.12.0+cpu.html ; \
   fi
 
-RUN pip3 install transformers==4.20.1 six Flask
+RUN pip3 install transformers==4.30.2 six Flask "numpy<2"
 
 # Download BERTje model ahead of time
 RUN python -c 'from transformers import pipeline; pipeline("fill-mask", model="GroNLP/bert-base-dutch-cased")'
@@ -49,6 +49,9 @@ COPY app.py app.py
 
 # Expose the port on which the Flask server will run
 EXPOSE 32768
+
+# Provide a default port value so FLASK_RUN_PORT is defined
+ENV SPINDLE_PORT=32768
 
 # Set the environment variable for Flask
 ENV FLASK_APP=app.py
