@@ -20,7 +20,7 @@ A host machine with Docker installed and internet access.
 
 2. Build an image with `docker build -t spindle-server:latest .`
 
-3. Run container and expose a port with `docker run -d -p 32768:5000 --name spindle-server spindle-server`
+3. Run container and expose a port with `docker run -d -p 32768:32768 --name spindle-server spindle-server`
 
 4. After successful startup, the server will setup the parser. This may take a few minutes.
 

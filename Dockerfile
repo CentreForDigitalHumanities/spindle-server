@@ -1,7 +1,6 @@
 # syntax=docker/dockerfile:1
 FROM python:3.10.12-bookworm
 
-
 # Show print logs; don't write .pyc files.
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
